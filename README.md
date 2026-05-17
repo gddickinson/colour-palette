@@ -170,3 +170,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Built using numpy and matplotlib
 - Color theory principles from traditional art and design
 - HSV color space calculations for intuitive color manipulation
+
+
+---
+*Built with AI assistance from [Claude (Anthropic)](https://claude.com/).*
