@@ -154,6 +154,13 @@ class TestRegressions(unittest.TestCase):
                 self.assertEqual([c.to_hex() for c in colors], palette["colors"], f"seed {seed}")
                 self.assertEqual([list(int(x * 255) for x in c.to_rgb()) for c in colors], palette["rgb_values"])
 
+    def test_any_integer_seed_works(self):
+        """Seeds outside 0..2**32-1 crashed in np.random.seed although only Python's random (any int) is used."""
+        for seed in (-1, 2 ** 32, 5_000_000_000, 2 ** 53 - 1):
+            p1 = ColorPaletteGenerator(seed).generate_palette()
+            p2 = ColorPaletteGenerator(seed).generate_palette()
+            self.assertEqual(p1["colors"], p2["colors"])
+
 
 if __name__ == "__main__":
     unittest.main()

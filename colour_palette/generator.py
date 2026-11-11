@@ -12,7 +12,8 @@ class ColorPaletteGenerator:
     def __init__(self, seed: int = None):
         if seed is not None:
             random.seed(seed)
-            np.random.seed(seed)
+            # numpy only accepts 0..2**32-1; Python's random (which draws the colours) takes any int
+            np.random.seed(seed % 2 ** 32)
 
         self.color_meanings = {
             "red": "energy, passion, excitement",
