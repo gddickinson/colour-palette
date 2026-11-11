@@ -15,8 +15,8 @@ A Python-based creative color palette generator that creates harmonious color co
 - **Advanced Color Analysis**:
   - Color temperature calculation
   - Brightness analysis
-  - Contrast ratio measurement
-  - Harmony level assessment
+  - Contrast (range between the lightest and darkest swatch)
+  - Harmony level (a simple score: twice the contrast, capped at 1)
 
 - **Rich Visualizations**:
   - Color blocks with RGB/Hex information
@@ -32,13 +32,13 @@ A Python-based creative color palette generator that creates harmonious color co
 
 1. Clone this repository:
 ```bash
-git clone [your-repo-url]
-cd color-palette-generator
+git clone https://github.com/gddickinson/colour-palette.git
+cd colour-palette
 ```
 
 2. Install required dependencies:
 ```bash
-pip install numpy matplotlib
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -47,9 +47,13 @@ pip install numpy matplotlib
 
 Generate palettes for all harmony types:
 
-```python
-python color_palette_generator.py
+```bash
+python colour_palette.py
 ```
+
+Options: `--seed N` (default 42), `--harmony {complementary,triadic,analogous,split_complementary,tetradic,monochromatic}`
+(default: all six), `--colors N` (default 5) and `--output-dir DIR` (default `.`). The committed `palette_*.png` and
+`palette_data.json` are the output of the default run (seed 42).
 
 This will:
 1. Create visualization files for each harmony type (`palette_*.png`)
@@ -59,7 +63,8 @@ This will:
 ### Programmatic Usage
 
 ```python
-from color_palette_generator import ColorPaletteGenerator, HarmonyType
+from colour_palette import Color, ColorPaletteGenerator, HarmonyType
+from colour_palette.visualizer import visualize_palette
 
 # Create generator with optional seed
 generator = ColorPaletteGenerator(seed=42)
@@ -74,7 +79,7 @@ palette_data = generator.generate_palette(
 # Create visualization
 colors = [Color.from_rgb(r/255, g/255, b/255) 
          for r, g, b in palette_data["rgb_values"]]
-generator.visualize_palette(
+visualize_palette(
     colors,
     title="Custom Palette",
     filename="custom_palette.png"
@@ -134,7 +139,7 @@ palette = generator.generate_palette(
 ### Adjusting Visualization
 
 ```python
-generator.visualize_palette(
+visualize_palette(
     colors,
     title="Custom Title",
     filename="custom_name.png"
@@ -145,10 +150,14 @@ generator.visualize_palette(
 
 The generator provides detailed analysis of each palette:
 
-- **Brightness**: Average luminosity of the palette
-- **Temperature**: Overall warm/cool classification
-- **Contrast**: Range of light to dark values
-- **Harmony**: Calculated harmony metric
+- **Brightness**: mean of (R + G + B) / 3 over the swatches (0-1)
+- **Temperature**: "warm" if the mean of (R - B) is positive, else "cool"
+- **Contrast**: brightest minus darkest swatch brightness
+- **Harmony**: min(1, 2 x contrast)
+
+Note that complementary palettes have at most 2 colours, triadic and split-complementary 3, and tetradic 4, whatever
+`num_colors` is; analogous and monochromatic use `num_colors`. The temperature preference (`warm`, `cool`, `neutral`)
+is available from Python (`generate_palette(temperature=...)`), not as a CLI option.
 
 ## Contributing
 
