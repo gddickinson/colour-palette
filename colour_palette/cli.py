@@ -60,6 +60,14 @@ def generate_and_save_palettes(
     print(f"Check {output_dir} for PNG files and palette_data.json.")
 
 
+def _positive_int(text: str) -> int:
+    """argparse type: an integer >= 1."""
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError(f"must be at least 1, got {value}")
+    return value
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate harmonious color palettes using color theory.",
@@ -71,7 +79,7 @@ def main():
         default=None,
         help="Harmony type (default: all)",
     )
-    parser.add_argument("--colors", type=int, default=5, help="Number of colors (default: 5)")
+    parser.add_argument("--colors", type=_positive_int, default=5, help="Number of colors (default: 5)")
     parser.add_argument("--output-dir", default=".", help="Output directory (default: .)")
 
     args = parser.parse_args()

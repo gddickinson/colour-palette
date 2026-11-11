@@ -60,7 +60,12 @@ class ColorPaletteGenerator:
         harmony_type: HarmonyType,
         num_colors: int = 5,
     ) -> List[Color]:
-        """Generate a color harmony based on the specified type."""
+        """Generate a color harmony based on the specified type.
+
+        Raises ValueError if num_colors < 1 (an empty palette cannot be analysed).
+        """
+        if num_colors < 1:
+            raise ValueError(f"num_colors must be at least 1, got {num_colors}")
         colors = [base_color]
 
         if harmony_type == HarmonyType.COMPLEMENTARY:

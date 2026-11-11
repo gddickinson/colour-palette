@@ -5,6 +5,8 @@ import os
 import tempfile
 import unittest
 
+import numpy as np
+
 from colour_palette.color import Color, HarmonyType
 from colour_palette.generator import ColorPaletteGenerator
 
@@ -105,6 +107,37 @@ class TestColorPaletteGenerator(unittest.TestCase):
         gen2 = ColorPaletteGenerator(seed=99)
         p2 = gen2.generate_palette()
         self.assertEqual(p1["colors"], p2["colors"])
+
+
+class TestRegressions(unittest.TestCase):
+    """Regression tests for bugs fixed in Nov 2026."""
+
+    def test_zero_colors_rejected_clearly(self):
+        gen = ColorPaletteGenerator(seed=1)
+        with self.assertRaises(ValueError):
+            gen.generate_harmony(Color(0.1, 0.8, 0.8), HarmonyType.TRIADIC, num_colors=0)
+
+    def test_cli_rejects_zero_colors(self):
+        import sys
+        from colour_palette import cli
+        old = sys.argv
+        sys.argv = ["colour_palette.py", "--colors", "0", "--output-dir", tempfile.mkdtemp()]
+        try:
+            with self.assertRaises(SystemExit):
+                cli.main()
+        finally:
+            sys.argv = old
+
+    def test_gradient_has_no_black_gaps(self):
+        """The blend strip left unfilled (black) columns: all of it for one colour, the tail for 4, 6, 7, 8 colours."""
+        from colour_palette.visualizer import gradient_blend
+        for n in range(1, 9):
+            colors = [Color(i / 9, 0.8, 0.9) for i in range(n)]
+            g = gradient_blend(colors)
+            self.assertEqual(g.shape, (2, 256, 3))
+            self.assertTrue((g.sum(axis=2) > 0).all(), f"black columns with {n} colours")
+            self.assertTrue(np.allclose(g[0, 0], colors[0].to_rgb()))
+            self.assertTrue(np.allclose(g[0, -1], colors[-1].to_rgb()))
 
 
 if __name__ == "__main__":

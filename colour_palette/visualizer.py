@@ -8,6 +8,24 @@ import numpy as np
 from colour_palette.color import Color
 
 
+def gradient_blend(colors: List[Color], width: int = 256) -> np.ndarray:
+    """Return a (2, width, 3) RGB strip blending linearly through the colors in order.
+
+    Segment boundaries are spread over the full width, so every column is filled (a single color gives a solid strip).
+    """
+    blended = np.zeros((2, width, 3))
+    rgbs = [np.array(c.to_rgb()) for c in colors]
+    if len(rgbs) == 1:
+        blended[:] = rgbs[0]
+        return blended
+    n_seg = len(rgbs) - 1
+    for i in range(n_seg):
+        start_idx = i * width // n_seg
+        end_idx = (i + 1) * width // n_seg
+        blended[:, start_idx:end_idx] = np.linspace(rgbs[i], rgbs[i + 1], end_idx - start_idx)
+    return blended
+
+
 def visualize_palette(
     colors: List[Color],
     title: str = "Color Palette",
@@ -38,22 +56,7 @@ def visualize_palette(
     ax1.set_ylim(0, 1)
     ax1.axis("off")
 
-    # Create gradient blend
-    gradient = np.linspace(0, 1, 256)
-    gradient = np.vstack((gradient, gradient))
-
-    blended = np.zeros((2, 256, 3))
-    for i in range(len(colors) - 1):
-        start_color = np.array(colors[i].to_rgb())
-        end_color = np.array(colors[i + 1].to_rgb())
-        segment = np.linspace(start_color, end_color, 256 // (len(colors) - 1))
-        start_idx = i * (256 // (len(colors) - 1))
-        end_idx = (i + 1) * (256 // (len(colors) - 1))
-        blended[:, start_idx:end_idx] = (
-            segment.T.reshape(3, -1).reshape(3, 1, -1).transpose(1, 2, 0)
-        )
-
-    ax2.imshow(blended, extent=[0, len(colors), 0, 0.1])
+    ax2.imshow(gradient_blend(colors), extent=[0, len(colors), 0, 0.1])
     ax2.axis("off")
 
     plt.suptitle(title, fontsize=16, y=0.95)
