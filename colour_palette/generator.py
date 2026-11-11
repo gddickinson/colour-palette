@@ -134,6 +134,16 @@ class ColorPaletteGenerator:
     ) -> Dict:
         """Generate a complete color palette with analysis."""
         base_color = self.generate_base_color(temperature)
+        return self.palette_from_base(base_color, harmony_type, num_colors, temperature)
+
+    def palette_from_base(
+        self,
+        base_color: Color,
+        harmony_type: HarmonyType = HarmonyType.COMPLEMENTARY,
+        num_colors: int = 5,
+        temperature: str = "neutral",
+    ) -> Dict:
+        """Build the palette dict (hex, RGB, HSV, analysis) for a given base color."""
         colors = self.generate_harmony(base_color, harmony_type, num_colors)
         analysis = self.analyze_palette(colors)
 
@@ -146,3 +156,22 @@ class ColorPaletteGenerator:
             "temperature": temperature,
         }
         return palette_data
+
+
+def generate_palettes(
+    seed: int = None,
+    harmony_type: str = None,
+    num_colors: int = 5,
+    temperature: str = "neutral",
+) -> Dict[str, Dict]:
+    """Generate the palettes of one CLI run: {harmony value: palette dict}.
+
+    One generator (seeded once) produces the harmonies in HarmonyType order, so with the same seed this is exactly
+    what `python colour_palette.py` writes to palette_data.json.
+    """
+    generator = ColorPaletteGenerator(seed)
+    harmonies = [HarmonyType(harmony_type)] if harmony_type else list(HarmonyType)
+    return {
+        h.value: generator.generate_palette(temperature=temperature, harmony_type=h, num_colors=num_colors)
+        for h in harmonies
+    }

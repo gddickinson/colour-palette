@@ -5,7 +5,7 @@ import json
 import os
 
 from colour_palette.color import Color, HarmonyType
-from colour_palette.generator import ColorPaletteGenerator
+from colour_palette.generator import generate_palettes
 from colour_palette.visualizer import visualize_palette
 
 
@@ -23,34 +23,20 @@ def generate_and_save_palettes(
         harmony_type: If given, generate only this harmony; otherwise all.
         num_colors: Number of colors per palette.
     """
-    generator = ColorPaletteGenerator(seed)
     os.makedirs(output_dir, exist_ok=True)
+    all_palettes = generate_palettes(seed, harmony_type, num_colors)
 
-    if harmony_type:
-        harmonies = [HarmonyType(harmony_type)]
-    else:
-        harmonies = list(HarmonyType)
-
-    all_palettes = {}
-    for harmony in harmonies:
-        print(f"\nGenerating {harmony.value} palette...")
-
-        palette_data = generator.generate_palette(
-            harmony_type=harmony,
-            num_colors=num_colors,
-        )
-
+    for name, palette_data in all_palettes.items():
+        print(f"\nGenerating {name} palette...")
         colors = [
             Color.from_rgb(r / 255, g / 255, b / 255)
             for r, g, b in palette_data["rgb_values"]
         ]
         visualize_palette(
             colors,
-            title=f"{harmony.value.title()} Color Harmony",
-            filename=os.path.join(output_dir, f"palette_{harmony.value}.png"),
+            title=f"{name.title()} Color Harmony",
+            filename=os.path.join(output_dir, f"palette_{name}.png"),
         )
-
-        all_palettes[harmony.value] = palette_data
 
     json_path = os.path.join(output_dir, "palette_data.json")
     with open(json_path, "w") as f:
