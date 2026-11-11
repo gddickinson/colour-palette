@@ -158,6 +158,32 @@ Note that complementary palettes have at most 2 colours, triadic and split-compl
 `num_colors` is; analogous and monochromatic use `num_colors`. The temperature preference (`warm`, `cool`, `neutral`)
 is available from Python (`generate_palette(temperature=...)`), not as a CLI option.
 
+## Web interface and static site
+
+The generator also runs in a browser: **https://gddickinson.github.io/colour-palette/** (published from `main` by
+`.github/workflows/pages.yml`). Pick a seed (the same seed gives the same palettes as `python colour_palette.py
+--seed N`) or a base colour, any harmony and 1-24 colours, and get hex / RGB / HSV / HSL values with copy buttons,
+the analysis and the gradient strip, plus JSON (`palette_data.json` format), PNG and CSS export. Other pages show the
+six harmonies on a hue wheel and cross-check the browser engine against the Python package.
+
+![Home](docs/img/home.png)
+![Generator](docs/img/generate.png)
+![Harmonies](docs/img/harmonies.png)
+
+Run the web app locally (palettes then come from the Python package, and the matplotlib PNG is available):
+
+```bash
+pip install -r requirements-web.txt
+python run_web.py          # http://127.0.0.1:8150
+python -m pytest -q tests/test_web.py test_colour_palette.py
+python scripts/build_static.py --out site   # the static site
+```
+
+The static site uses `colour_palette/web/static/colour_engine.js`, a JavaScript port of `color.py` and `generator.py`
+including Python's Mersenne Twister seeding and `colorsys`. `node colour_palette/web/static/colour_engine.test.mjs`
+compares it with reference values computed by the Python code (`scripts/make_engine_fixture.py` writes
+`tests/fixtures/colour_engine.json`); all of them are bit-identical.
+
 ## Contributing
 
 Areas for potential enhancement:
@@ -167,7 +193,6 @@ Areas for potential enhancement:
 - Enhanced visualization options
 - Color accessibility analysis
 - Pattern generation
-- UI/Web interface
 
 ## License
 

@@ -13,7 +13,7 @@ A single-file Python tool (`colour-palette.py`) generating harmonious color pale
 
 ## Feature Enhancements
 - [ ] Add WCAG contrast ratio checking for accessibility compliance
-- [ ] Generate CSS/Tailwind/SASS color variable exports
+- [ ] Generate CSS/Tailwind/SASS color variable exports (the web UI exports CSS custom properties)
 - [ ] Add interactive mode using matplotlib widgets (pick base color, see harmonies live)
 - [ ] Implement color blindness simulation (protanopia, deuteranopia, tritanopia)
 - [ ] Add palette extraction from images (dominant color extraction via k-means)
@@ -21,7 +21,7 @@ A single-file Python tool (`colour-palette.py`) generating harmonious color pale
 - [ ] Generate gradient CSS code alongside palette swatches
 
 ## Long-term Vision
-- [ ] Build a web UI for interactive palette creation (Flask + Canvas)
+- [x] Build a web UI for interactive palette creation (FastAPI + static GitHub Pages site, Nov 2026)
 - [ ] Add AI-powered palette suggestions based on mood/theme keywords
 - [ ] Create a Figma/Sketch plugin that exports palettes directly
 - [ ] Support design system generation (primary, secondary, accent, semantic colors)

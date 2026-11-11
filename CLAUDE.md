@@ -20,3 +20,12 @@ See [`INTERFACE.md`](./INTERFACE.md) for a navigation map of this repository's m
 When directing Claude Code on this codebase, follow the global rules above, prefer making targeted edits via the `Edit` tool over rewriting whole files, and update `INTERFACE.md` whenever the project structure changes.
 
 Project-specific conventions, build instructions, and lab-specific notes should be added below as the project evolves.
+
+@INTERFACE.md
+
+## Web interface
+
+- `python run_web.py` (port 8150); tests: `python -m pytest -q tests/test_web.py test_colour_palette.py`.
+- `colour_palette/web/static/colour_engine.js` must stay in step with `color.py` / `generator.py`: after changing the
+  Python, run `python scripts/make_engine_fixture.py --write` and `node colour_palette/web/static/colour_engine.test.mjs`
+  (test_web.py fails if the fixture is stale).

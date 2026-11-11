@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour Palette Generator</title>
+<meta name="description" content="Generate harmonious colour palettes (complementary, triadic, analogous, split-complementary, tetradic, monochromatic) in your browser: a tested JavaScript port of the Python colour-palette generator, with the same seeds giving the same palettes.">
+<link rel="icon" href="static/icon.svg">
+<link rel="stylesheet" href="static/style.css">
+<link rel="stylesheet" href="static/style_app.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#/"><span class="mark"></span>Palette</a>
+  <nav class="groups">
+    <a href="#/generate" data-nav="generate">Generator</a>
+    <a href="#/harmonies" data-nav="harmonies">Harmonies</a>
+    <a href="#/check" data-nav="check">Cross-check</a>
+    <a href="#/about" data-nav="about">About</a>
+  </nav>
+  <div class="right"><a class="small mute" href="https://github.com/gddickinson/colour-palette" target="_blank" rel="noopener">GitHub</a></div>
+</header>
+<main id="app" tabindex="-1"></main>
+<p id="toast" class="toast" role="status" aria-live="polite"></p>
+<footer class="foot">Colour Palette Generator · <a href="https://github.com/gddickinson/colour-palette">source on GitHub</a> · <span id="mode"></span></footer>
+<script type="module" src="static/main.js"></script>
+</body>
+</html>
