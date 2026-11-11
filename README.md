@@ -94,7 +94,7 @@ visualize_palette(
 - Names format: `palette_[harmony_type].png`
 
 ### JSON Data
-- Complete palette information in `palette_data.json`
+- Complete palette information in `palette_data.json` (RGB/hex rounded to 0-255, so hex codes round-trip)
 - Includes for each palette:
   - Hex color codes
   - RGB values

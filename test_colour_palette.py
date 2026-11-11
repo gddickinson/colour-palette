@@ -140,7 +140,7 @@ class TestRegressions(unittest.TestCase):
             self.assertTrue(np.allclose(g[0, -1], colors[-1].to_rgb()))
 
     def test_png_labels_match_json(self):
-        """The CLI rebuilt PNG colours from the truncated 0-255 RGB, so about a third of labels were 1 lower than JSON."""
+        """The CLI rebuilt PNG colours from the 0-255 RGB (then truncated), so about a third of labels were 1 lower than JSON."""
         from unittest import mock
         from colour_palette import cli
         for seed in range(12):
@@ -152,7 +152,7 @@ class TestRegressions(unittest.TestCase):
                 data = json.load(f)
             for colors, palette in zip(seen, data.values()):
                 self.assertEqual([c.to_hex() for c in colors], palette["colors"], f"seed {seed}")
-                self.assertEqual([list(int(x * 255) for x in c.to_rgb()) for c in colors], palette["rgb_values"])
+                self.assertEqual([list(c.to_rgb255()) for c in colors], palette["rgb_values"])
 
     def test_any_integer_seed_works(self):
         """Seeds outside 0..2**32-1 crashed in np.random.seed although only Python's random (any int) is used."""
@@ -160,6 +160,24 @@ class TestRegressions(unittest.TestCase):
             p1 = ColorPaletteGenerator(seed).generate_palette()
             p2 = ColorPaletteGenerator(seed).generate_palette()
             self.assertEqual(p1["colors"], p2["colors"])
+
+    def test_hex_round_trips(self):
+        """to_hex truncated int(x * 255), so e.g. #12ab34 -> Color.from_rgb -> to_hex gave #11ab34. Dense sample:
+        every value of each channel against a grid of the other two, plus 100k random colours (the node test of the
+        bit-identical JS port, colour_engine.test.mjs, checks all 16.7M)."""
+        import random as rnd
+        grid = range(0, 256, 17)
+        samples = [(v, a, b) for v in range(256) for a in grid for b in grid]
+        samples += [(a, v, b) for v in range(256) for a in grid for b in grid]
+        samples += [(a, b, v) for v in range(256) for a in grid for b in grid]
+        r = rnd.Random(2026)
+        samples += [(r.randrange(256), r.randrange(256), r.randrange(256)) for _ in range(100_000)]
+        for rgb in samples:
+            c = Color.from_rgb(*(x / 255 for x in rgb))
+            want = "#%02x%02x%02x" % rgb
+            if c.to_hex() != want or c.to_rgb255() != rgb:
+                self.fail(f"{want} came back as {c.to_hex()} / {c.to_rgb255()}")
+        self.assertEqual(Color.from_rgb(0x12 / 255, 0xab / 255, 0x34 / 255).to_hex(), "#12ab34")
 
 
 if __name__ == "__main__":

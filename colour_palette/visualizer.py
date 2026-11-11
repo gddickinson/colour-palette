@@ -46,7 +46,7 @@ def visualize_palette(
         ax1.text(
             i + 0.5,
             0.5,
-            f"RGB: {tuple(int(x*255) for x in rgb)}\nHex: {color.to_hex()}",
+            f"RGB: {color.to_rgb255()}\nHex: {color.to_hex()}",
             ha="center",
             va="center",
             color="white" if sum(rgb) < 1.5 else "black",

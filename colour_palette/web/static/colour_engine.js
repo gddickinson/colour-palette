@@ -118,7 +118,13 @@ export function color(h, s, v) {
   return { h: pyMod(h, 1.0), s: Math.max(0.0, Math.min(1.0, s)), v: Math.max(0.0, Math.min(1.0, v)) };
 }
 export const toRgb = c => hsvToRgb(c.h, c.s, c.v);
-export const rgb255 = c => toRgb(c).map(x => Math.trunc(x * 255));
+// Python's round() on a float: nearest integer, ties to even.
+export function pyRound(x) {
+  const f = Math.floor(x), d = x - f;
+  return d > 0.5 ? f + 1 : d < 0.5 ? f : (f % 2 === 0 ? f : f + 1);
+}
+// Color.to_rgb255: channels rounded to 0-255 (hex -> Color -> hex round-trips).
+export const rgb255 = c => toRgb(c).map(x => pyRound(x * 255));
 export const toHex = c => '#' + rgb255(c).map(x => x.toString(16).padStart(2, '0')).join('');
 export function fromRgb(r, g, b) { const [h, s, v] = rgbToHsv(r, g, b); return color(h, s, v); }
 export function fromHex(hex) {

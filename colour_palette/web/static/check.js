@@ -47,8 +47,8 @@ route('check', async () => {
   }
   $('#t1 tbody').innerHTML = rows.join('');
   const pd = await api('/palette_data'), c = compare(pd, generatePalettes(42, null, 5));
-  $('#pd').innerHTML = `Seed 42, written by an earlier version of the code: ${c.hexSame}/${c.hexAll} hex codes and RGB values equal;
-    largest float difference ${c.maxDiff.toExponential(1)} (only the last digits of the analysis contrast differ).`;
+  $('#pd').innerHTML = `Seed 42 (the default CLI run): ${c.hexSame}/${c.hexAll} hex codes and RGB values equal;
+    largest float difference ${c.maxDiff === 0 ? '0 (bit-identical)' : c.maxDiff.toExponential(1)}.`;
   if (isStatic()) {
     $('#live').innerHTML = `<p class="static-note">On the static site the Python side is the runs exported at build time
       (seeds ${info.demo_seeds.join(', ')}). The local app compares any seed live.</p>`;

@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  PyRandom, PaletteGenerator, color, toHex, toRgb, rgbToHsv, rgbToHls, fromHex, generatePalettes, gradientBlend,
+  PyRandom, PaletteGenerator, color, toHex, toRgb, rgbToHsv, rgbToHls, fromHex, fromRgb, rgb255, pyRound, generatePalettes, gradientBlend,
 } from './colour_engine.js';
 
 const FIX = JSON.parse(readFileSync(new URL('../../../tests/fixtures/colour_engine.json', import.meta.url)));
@@ -59,7 +59,14 @@ for (const c of FIX.gradients) {
   for (const [j, rgb] of Object.entries(c.cols)) closeArr(g[+j], rgb, `gradient n=${c.bases.length} col ${j}`);
   n++;
 }
-// 7. input checks
+// 7. every 24-bit colour round-trips: rgb -> Color.from_rgb -> to_rgb255 (Python fixed to round, Nov 2026)
+for (let r = 0; r < 256; r++) for (let g = 0; g < 256; g++) for (let b = 0; b < 256; b++) {
+  const o = rgb255(fromRgb(r / 255, g / 255, b / 255));
+  if (o[0] !== r || o[1] !== g || o[2] !== b) assert.fail(`rgb(${r},${g},${b}) came back as ${o}`);
+}
+assert.equal(toHex(fromHex('#12ab34')), '#12ab34'); n++;
+[[0.5, 0], [1.5, 2], [2.5, 2], [127.5, 128], [128.5, 128], [3.49, 3], [3.51, 4]].forEach(([x, want]) => assert.equal(pyRound(x), want, `round(${x})`));
+// 8. input checks
 assert.throws(() => g0.generateHarmony(color(0.1, 0.5, 0.5), 'triadic', 0));
 assert.throws(() => fromHex('#12345'));
 

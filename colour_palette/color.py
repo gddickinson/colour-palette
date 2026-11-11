@@ -25,10 +25,14 @@ class Color:
         """Convert HSV to RGB (each channel 0-1)."""
         return colorsys.hsv_to_rgb(self.h, self.s, self.v)
 
+    def to_rgb255(self) -> Tuple[int, int, int]:
+        """RGB as integers 0-255, rounded to nearest (so hex -> Color -> hex round-trips)."""
+        r, g, b = self.to_rgb()
+        return round(r * 255), round(g * 255), round(b * 255)
+
     def to_hex(self) -> str:
         """Convert to hex color code."""
-        rgb = self.to_rgb()
-        return f"#{int(rgb[0]*255):02x}{int(rgb[1]*255):02x}{int(rgb[2]*255):02x}"
+        return "#%02x%02x%02x" % self.to_rgb255()
 
     @classmethod
     def from_rgb(cls, r: float, g: float, b: float) -> 'Color':

@@ -28,7 +28,7 @@ def generate_and_save_palettes(
 
     for name, palette_data in all_palettes.items():
         print(f"\nGenerating {name} palette...")
-        # Rebuild from the exact HSV values: going through the truncated 0-255 RGB made labels 1 lower than the JSON.
+        # Rebuild from the exact HSV values (not the 0-255 RGB) so PNG labels always equal the JSON.
         colors = [Color(h, s, v) for h, s, v in palette_data["hsv_values"]]
         visualize_palette(
             colors,

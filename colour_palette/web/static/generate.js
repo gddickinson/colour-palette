@@ -73,10 +73,7 @@ async function update() {
   try { pals = await compute(); } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; return; }
   if (my !== ticket) return;
   palettes = pals;
-  const first = Object.values(pals)[0];
-  const note = S.mode === 'base' && first && first.colors[0] !== S.base
-    ? `<p class="callout small">The base reads ${first.colors[0]}, not ${S.base}: the Python code converts your colour to HSV and back, and <code>Color.to_hex</code> truncates (rather than rounds) to 0-255, so channels can come out one level lower.</p>` : '';
-  out.innerHTML = note + list(Object.entries(pals), ([k, p]) => paletteBlock(k, p));
+  out.innerHTML = list(Object.entries(pals), ([k, p]) => paletteBlock(k, p));
   $$('.pal', out).forEach(sec => drawGradient($('canvas.grad', sec), pals[sec.dataset.pal].hsv_values));
   const src = Object.values(pals)[0]?.source || (S.mode === 'seed' && S.h === 'all' ? 'cli' : '');
   $('#src').textContent = isStatic() ? 'computed in your browser by colour_engine.js' : `computed by the Python package (${src || 'python'})`;

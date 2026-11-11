@@ -25,7 +25,7 @@ route('about', async () => {
       </ul>
       <h3>Colour values</h3>
       <p class="small">HSV is the generator's own space. RGB and hex come from <code>colorsys.hsv_to_rgb</code> and are
-      truncated to 0-255 (as <code>Color.to_hex</code> does); HSL is <code>colorsys.rgb_to_hls</code> of the same colour.
+      rounded to 0-255 (<code>Color.to_rgb255</code>, so a hex code round-trips); HSL is <code>colorsys.rgb_to_hls</code> of the same colour.
       Exports: JSON in the format of <code>palette_data.json</code>, a PNG laid out like <code>palette_*.png</code>
       ${isStatic() ? '' : '(or the matplotlib original from the local app)'}, and CSS custom properties (a web-only extra).</p></div>
   </div>

@@ -150,7 +150,7 @@ class ColorPaletteGenerator:
 
         palette_data = {
             "colors": [color.to_hex() for color in colors],
-            "rgb_values": [tuple(int(x * 255) for x in color.to_rgb()) for color in colors],
+            "rgb_values": [color.to_rgb255() for color in colors],
             "hsv_values": [(color.h, color.s, color.v) for color in colors],
             "analysis": analysis,
             "harmony_type": harmony_type.value,

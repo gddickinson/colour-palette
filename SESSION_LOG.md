@@ -20,6 +20,8 @@ Bugs fixed in the existing code (each in its own commit, with a regression test 
 - Seeds below 0 or above 2^32 - 1 crashed in `np.random.seed`.
 - README: wrong script/module names, `visualize_palette` called as a method, "contrast ratio" wording.
 
-Open (George's decision): `Color.to_hex` and `rgb_values` truncate (`int(x * 255)`) rather than round, so a picked
-base colour such as #12ab34 comes back as #11ab34. Rounding would change every palette's hex/RGB by up to one level
-(including the committed palette_data.json), so it was left as is; the web generator shows a note when it happens.
+George approved rounding (2026-11-11). `Color.to_hex` and `rgb_values` truncated with `int(x * 255)`, so a picked
+#12ab34 came back as #11ab34. They now round (new `Color.to_rgb255()`, used by to_hex, generate_palette and the PNG
+labels; JS `rgb255` uses a ties-to-even `pyRound` like Python's `round`). Every 24-bit colour now round-trips (node test
+checks all 16.7M; Python test a dense ~300k sample). Committed `palette_data.json` and `palette_*.png` regenerated
+(seed 42: 19 of 22 hex codes move up by one level), engine fixture rewritten, web truncation note removed.
