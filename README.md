@@ -77,8 +77,7 @@ palette_data = generator.generate_palette(
 )
 
 # Create visualization
-colors = [Color.from_rgb(r/255, g/255, b/255) 
-         for r, g, b in palette_data["rgb_values"]]
+colors = [Color(h, s, v) for h, s, v in palette_data["hsv_values"]]
 visualize_palette(
     colors,
     title="Custom Palette",

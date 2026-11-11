@@ -139,6 +139,21 @@ class TestRegressions(unittest.TestCase):
             self.assertTrue(np.allclose(g[0, 0], colors[0].to_rgb()))
             self.assertTrue(np.allclose(g[0, -1], colors[-1].to_rgb()))
 
+    def test_png_labels_match_json(self):
+        """The CLI rebuilt PNG colours from the truncated 0-255 RGB, so about a third of labels were 1 lower than JSON."""
+        from unittest import mock
+        from colour_palette import cli
+        for seed in range(12):
+            seen = []
+            with mock.patch.object(cli, "visualize_palette", lambda colors, **kw: seen.append(colors)):
+                out = tempfile.mkdtemp()
+                cli.generate_and_save_palettes(seed=seed, output_dir=out)
+            with open(os.path.join(out, "palette_data.json")) as f:
+                data = json.load(f)
+            for colors, palette in zip(seen, data.values()):
+                self.assertEqual([c.to_hex() for c in colors], palette["colors"], f"seed {seed}")
+                self.assertEqual([list(int(x * 255) for x in c.to_rgb()) for c in colors], palette["rgb_values"])
+
 
 if __name__ == "__main__":
     unittest.main()
