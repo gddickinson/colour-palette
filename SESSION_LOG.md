@@ -25,3 +25,5 @@ George approved rounding (2026-11-11). `Color.to_hex` and `rgb_values` truncated
 labels; JS `rgb255` uses a ties-to-even `pyRound` like Python's `round`). Every 24-bit colour now round-trips (node test
 checks all 16.7M; Python test a dense ~300k sample). Committed `palette_data.json` and `palette_*.png` regenerated
 (seed 42: 19 of 22 hex codes move up by one level), engine fixture rewritten, web truncation note removed.
+
+Removed the root `colour-palette.py` (an identical copy of `_archive/colour-palette.py`, still truncating hex values; nothing referenced it). ROADMAP's "Current State" now says the single file is archived.

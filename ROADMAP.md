@@ -1,7 +1,7 @@
 # Color Palette Generator -- Roadmap
 
 ## Current State
-A single-file Python tool (`colour-palette.py`) generating harmonious color palettes using color theory. Implements 6 harmony types (complementary, triadic, analogous, split-complementary, tetradic, monochromatic) with a `Color` dataclass and `ColorPaletteGenerator` class. Outputs PNG visualizations and JSON data. Uses dataclasses, enums, and type hints. Clean code with proper structure, but everything in one file.
+Originally a single-file Python tool (`colour-palette.py`, now in `_archive/`; the package `colour_palette/` replaced it) generating harmonious color palettes using color theory. Implements 6 harmony types (complementary, triadic, analogous, split-complementary, tetradic, monochromatic) with a `Color` dataclass and `ColorPaletteGenerator` class. Outputs PNG visualizations and JSON data. Uses dataclasses, enums, and type hints. The original kept everything in one file; it is now split into modules (see INTERFACE.md).
 
 ## Short-term Improvements
 - [x] Add `requirements.txt` (numpy, matplotlib)
